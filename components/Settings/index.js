@@ -2,65 +2,39 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import { SettingsScreen } from 'react-native-settings-screen';
+import { FontAwesome5 } from '@expo/vector-icons'; 
 
-const Settings = ({ status }) => {
-  const temperatureModes = ['Celcius', 'Fahrenheit'];
-
+const Settings = ({ status, navigation }) => {
   const data = [
     {
       type: 'SECTION',
-      header: 'Fuel Mixture'.toUpperCase(),
+      header: ' ',
       rows: [
         {
-          title: 'Pump Min',
+          title: 'Connection',
           showDisclosureIndicator: true,
-          renderAccessory: () => (
-            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('PumpMin')} Hz
-            </Text>
-          ),
-        },
-        {
-          title: 'Pump Max',
-          showDisclosureIndicator: true,
-          renderAccessory: () => (
-            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('PumpMax')} Hz
-            </Text>
-          ),
-        },
-        {
-          title: 'Fan Min',
-          showDisclosureIndicator: true,
-          renderAccessory: () => (
-            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('FanMin')} RPM
-            </Text>
-          ),
-        },
-        {
-          title: 'Fan Max',
-          showDisclosureIndicator: true,
-          renderAccessory: () => (
-            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('FanMax')} RPM
-            </Text>
-          ),
+          onPress: () => navigation.navigate('Connection'),
         },
       ],
     },
     {
       type: 'SECTION',
-      header: 'System Settings'.toUpperCase(),
+      header: 'Heater Settings'.toUpperCase(),
       rows: [
         {
-          title: 'Temperature Format',
+          title: 'System',
           showDisclosureIndicator: true,
-          renderAccessory: () => (
-            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {temperatureModes[status.get('TempMode')]}
-            </Text>
-          ),
+          onPress: () => navigation.navigate('System'),
+        },
+        {
+          title: 'Fuel Mixture',
+          showDisclosureIndicator: true,
+          onPress: () => navigation.navigate('Fuel Mixture'),
+        },
+        {
+          title: 'About',
+          showDisclosureIndicator: true,
+          onPress: () => navigation.navigate('About'),
         },
       ],
     },

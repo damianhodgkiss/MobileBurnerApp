@@ -4,7 +4,8 @@ import { refreshTimers, updateTimer } from '../actions/timers';
 import { refreshState, updateState } from '../actions/state';
 import { put, putResolve } from 'redux-saga/effects';
 
-const topicPrefix = 'AfterburnerA3719C';
+//const topicPrefix = 'AfterburnerA3719C';
+const topicPrefix = 'AfterburnerA36F14';
 
 console.log('connecting');
 const client = mqtt.connect('ws://broker.hivemq.com:8000/mqtt');
