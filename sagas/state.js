@@ -8,7 +8,6 @@ function *refreshState() {
 }
 
 function *sendState({ key, value }) {
-  console.log('SEND:', key, value);
   mqttSend({ [key]: value });
   mqttSend({ Refresh: 1 });
 }

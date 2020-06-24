@@ -26,6 +26,28 @@ const convertSecToHour = (seconds) => {
 }
 
 const AboutSettings = ({ status }) => {
+  let noGPIO = false;
+  noGPIO |= (status.get('GPin1') === undefined);
+  noGPIO |= (status.get('GPin2') === undefined);
+  noGPIO |= (status.get('GPmodeIn1') === undefined);
+  noGPIO |= (status.get('GPmodeIn2') === undefined);
+  noGPIO |= (status.get('GPout1') === undefined);
+  noGPIO |= (status.get('GPout2') === undefined);
+  noGPIO |= (status.get('GPmodeOut1') === undefined);
+  noGPIO |= (status.get('GPmodeOut2') === undefined);
+
+  let noAnalog = false;
+  noAnalog |= (status.get('GPmodeAnlg') === undefined);
+  noAnalog |= (status.get('GPanlg') === undefined);
+
+  let gpioCapability = 'Not fitted';
+  if (!noGPIO) {
+    if (noAnalog) {
+      gpioCapability = 'Digital I/O only';
+    } else {
+      gpioCapability = 'Digital I/O & Analogue in';
+    }
+  }
   const data = [
     {
       type: 'SECTION',
@@ -50,23 +72,14 @@ const AboutSettings = ({ status }) => {
           ),
         },
         {
-          title: 'MQTT Webburner',
+          title: 'GPIO',
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('WebVer')}
+              {gpioCapability}
             </Text>
           ),
         },
-        {
-          title: 'Web Date',
-          showDisclosureIndicator: false,
-          renderAccessory: () => (
-            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('WebDate')}
-            </Text>
-          ),
-        }
       ],
     },
     {
@@ -170,7 +183,7 @@ const AboutSettings = ({ status }) => {
           ),
         },
       ],
-    }
+    },
   ];
     
   return (

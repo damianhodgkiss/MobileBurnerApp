@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import { PersistGate } from 'redux-persist/integration/react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider } from 'react-redux';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { MaterialIcons } from '@expo/vector-icons'; 
-import store from './store';
-import mqtt from './mqtt';
+import { store, persistor } from './store';
+import { mqttReconnect } from './mqtt';
 import { sendState } from './actions/state';
 import RemoteControl from './components/RemoteControl';
 import Settings from './components/Settings';
@@ -56,7 +57,7 @@ const HomeScreenComponent = ({ navigation, status }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ color, size }) => {
           if (route.name === 'POWER') {
             return <MaterialCommunityIcons name="power" size={size} color={color} />
           }
@@ -86,7 +87,14 @@ const HomeScreenComponent = ({ navigation, status }) => {
         },
       }}
     >
-      <Tab.Screen name="POWER" component={RemoteControl} listeners={{
+      <Tab.Screen name="POWER" component={RemoteControl} 
+        options={{
+          title: `POWER ${powerStateAllowed}`,
+          labelStyle: {
+            color: 'red',
+          },
+        }}
+        listeners={{
           tabPress: e => {
             e.preventDefault();
           },
@@ -120,8 +128,13 @@ const mapStateToProps = (state) => ({
 
 const HomeScreen = connect(mapStateToProps, {})(HomeScreenComponent);
 
-
 export default function App() {
+  React.useEffect(() => {
+    const status = store.getState().state;
+    
+    mqttReconnect();
+  }, []);
+  
   return (
     <Provider store={store}>
       <NavigationContainer>

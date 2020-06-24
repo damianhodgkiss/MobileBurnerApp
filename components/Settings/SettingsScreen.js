@@ -3,15 +3,19 @@ import { Picker, View, StyleSheet } from 'react-native';
 import { SettingsScreen } from 'react-native-settings-screen';
 import Prompt from 'react-native-input-prompt-cex';
 import { useState } from 'react';
-import store from '../../store';
-import { sendState } from '../../actions/state';
+import { store } from '../../store';
+import { sendState, updateState } from '../../actions/state';
 
 const SettingsPrompt = ({ visible, title, placeholder, setting, value, onClose }) => {
   const submitPrompt = (key, value) => {
     const { dispatch } = store;
 
-    console.log('SUBMIT:', key, value, dispatch);
-    dispatch(sendState(key, value));
+    if (key.indexOf('MQTTClient') === 0) {
+      dispatch(updateState(key, value));
+    } else {
+      dispatch(updateState(key, value));
+      dispatch(sendState(key, value));
+    }
     onClose();
   };
     
@@ -30,16 +34,23 @@ const SettingsPrompt = ({ visible, title, placeholder, setting, value, onClose }
 
 const SettingsPicker = ({ value, setting, options, onClose }) => {
   const submitValue = (value) => {
-    console.log('SUBMIT:', setting, value);
+    const { dispatch } = store;
+
+    if (setting.indexOf('MQTTClient') === 0) {
+      dispatch(updateState(setting, value));
+    } else {
+      dispatch(updateState(setting, value));
+      dispatch(sendState(setting, value));
+    }
     onClose();
   };
 
   return (
     <Picker
-      selectedValue={value}
+      selectedValue={Number(value)}
       onValueChange={submitValue}
     >
-      {Object.keys(options).map(key => <Picker.Item label={options[key]} value={key} />)}
+      {Object.keys(options).map(key => <Picker.Item label={options[key]} value={Number(key)} />)}
     </Picker>
 
   )
@@ -69,6 +80,7 @@ const MySettingsScreen = ({ set, data }) => {
       }
       {picker &&
         <SettingsPicker options={picker.options}
+        value={picker.value}
         setting={picker.setting}
         onClose={() => setPicker(null)}
         />

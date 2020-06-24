@@ -3,6 +3,13 @@ import { connect } from 'react-redux';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import SettingsScreen from '../SettingsScreen';
 
+const formatDateTime = (str) => {
+  const dateParts = str.split('/');
+  const timeParts = dateParts[2].split(' ')[1].split(':');
+  dateParts[2] = dateParts[2].split(' ')[0];
+  return new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0], timeParts[0], timeParts[1], timeParts[2]);
+};
+
 const SystemSettings = ({ status }) => {
   const temperatureModes = ['Celcius', 'Fahrenheit'];
   let settings = null;
@@ -17,6 +24,7 @@ const SystemSettings = ({ status }) => {
           showDisclosureIndicator: true,
           onPress: () => settings.setPicker({
             setting: 'TempMode',
+            value: status.get('TempMode'),
             options: {
               0: 'Celcius',
               1: 'Fahrenheit',
@@ -55,6 +63,30 @@ const SystemSettings = ({ status }) => {
         },
       ],
     },
+    {
+      type: 'SECTION',
+      header: 'Date & Time'.toUpperCase(),
+      rows: [
+        {
+          title: 'Local',
+          showDisclosureIndicator: false,
+          renderAccessory: () => (
+            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
+              {(new Date()).toLocaleString()}
+            </Text>
+          ),
+        },
+        {
+          title: 'Afterburner',
+          showDisclosureIndicator: true,
+          renderAccessory: () => (
+            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
+              {formatDateTime(status.get('DateTime')).toLocaleString()}
+            </Text>
+          ),
+        },
+      ],
+    }
   ];
     
   return (

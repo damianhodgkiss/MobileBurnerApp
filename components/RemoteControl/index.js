@@ -6,6 +6,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { store } from '../../store';
+import { sendState, updateState } from '../../actions/state';
 
 const Row = ({ label, value, children }) => {
   return (
@@ -17,11 +19,13 @@ const Row = ({ label, value, children }) => {
   )
 }
 
+let timeout = null;
+
 const RemoteControl = ({ status }) => {
-  const { TempCurrent } = status;
   const spinValue = React.useRef(new Animated.Value(0)).current;
-  
   const RPM = status.get('FanRPM');
+  const runState = Number(status.get('RunState') || 0);
+  
   const spinFan = () => {
     spinValue.setValue(0);
     Animated.timing(spinValue, {
@@ -40,12 +44,18 @@ const RemoteControl = ({ status }) => {
     outputRange: ['0deg', '360deg']
   });
 
-  const decreaseTemperature = () => {
-    console.log('DEC');
-  };
+  const setTemperature = (dir) => {
+    const { dispatch } = store;
+    const desiredTemp = Math.min(Math.max(
+      status.get('TempDesired') + dir, status.get('TempMin')
+    ), status.get('TempMax'));
 
-  const increaseTemperature = () => {
-    console.log('INC');
+    dispatch(updateState('TempDesired', desiredTemp));   
+
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      dispatch(sendState('TempDesired', desiredTemp));
+    }, 1000);
   };
 
   return (
@@ -80,8 +90,8 @@ const RemoteControl = ({ status }) => {
               }
             </AnimatedCircularProgress>
             <View style={{ top: -50, flexDirection: 'row', justifyContent: 'center' }}>
-              <TouchableOpacity onPress={decreaseTemperature} style={{ marginRight: 10 }}><FontAwesome5 name="caret-down" size={50} color="rgb(241,160,62)" /></TouchableOpacity>
-              <TouchableOpacity onPress={increaseTemperature} style={{ marginLeft: 10 }}><FontAwesome5 name="caret-up" size={50} color="rgb(241,160,62)" /></TouchableOpacity>
+              <TouchableOpacity onPress={() => setTemperature(-1)} style={{ marginRight: 10 }}><FontAwesome5 name="caret-down" size={50} color="rgb(241,160,62)" /></TouchableOpacity>
+              <TouchableOpacity onPress={() => setTemperature(1)} style={{ marginLeft: 10 }}><FontAwesome5 name="caret-up" size={50} color="rgb(241,160,62)" /></TouchableOpacity>
             </View>
           </View>
 
@@ -90,20 +100,29 @@ const RemoteControl = ({ status }) => {
               top: -50,
             },
           }) }}>
-            <Row label="Fan Speed" value={`${RPM} RPM`}>
-              <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                <MaterialCommunityIcons name="fan" size={16} color="white" />
-              </Animated.View>
-            </Row>
-            <Row label="Fuel Pump" value={`${status.get('PumpActual')} Hz`}>
-              <FontAwesome5 name="gas-pump" size={16} color="white" />
-            </Row>
+            {(runState !== 0 || RPM > 0) &&
+              <Row label="Fan Speed" value={`${RPM} RPM`}>
+                <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                  <MaterialCommunityIcons name="fan" size={16} color="white" />
+                </Animated.View>
+              </Row>
+            }
+            {(runState !== 0 || status.get('PumpActual') > 0) &&
+              <Row label="Fuel Pump" value={`${status.get('PumpActual')} Hz`}>
+                <FontAwesome5 name="gas-pump" size={16} color="white" />
+              </Row>
+            }
             <Row label="Body Temperature" value={`${status.get('TempBody')}\u2103`}>
               <MaterialCommunityIcons name="thermometer" size={16} color="white" />
             </Row>
             <Row label="Input Voltage" value={`${status.get('InputVoltage')}V`}>
               <MaterialCommunityIcons name="battery" size={16} color="white" />
             </Row>
+            {![0,4,5,8,10,12].includes(runState) &&
+              <Row label="Glow Plug" value={`${status.get('GlowCurrent')}A`}>
+                <MaterialCommunityIcons name="power-plug" size={16} color="white" />
+              </Row>
+            }
           </View>
 
         </View>
