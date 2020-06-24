@@ -32,6 +32,11 @@ const Settings = ({ status, navigation }) => {
           onPress: () => navigation.navigate('Fuel Mixture'),
         },
         {
+          title: 'Thermostat',
+          showDisclosureIndicator: true,
+          onPress: () => navigation.navigate('Thermostat'),
+        },
+        {
           title: 'About',
           showDisclosureIndicator: true,
           onPress: () => navigation.navigate('About'),
@@ -40,7 +45,6 @@ const Settings = ({ status, navigation }) => {
     },
   ];
 
-  console.log('ST:', status);
   if (status !== 'online') {
     data = data.slice(0, 1);
   }

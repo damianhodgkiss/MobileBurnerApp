@@ -18,6 +18,7 @@ import AboutSettings from './components/Settings/AboutSettings';
 import SystemSettings from './components/Settings/SystemSettings';
 import FuelSettings from './components/Settings/FuelSettings';
 import ConnectionSettings from './components/Settings/ConnectionSettings';
+import ThermostatSettings from './components/Settings/ThermostatSettings';
 import Timers from './components/Timers';
 
 const HomeStack = createStackNavigator();
@@ -158,6 +159,7 @@ export default function App() {
           <HomeStack.Screen name="About" component={AboutSettings} />
           <HomeStack.Screen name="System" component={SystemSettings} />
           <HomeStack.Screen name="Fuel Mixture" component={FuelSettings} />
+          <HomeStack.Screen name="Thermostat" component={ThermostatSettings} />
 
           <HomeStack.Screen name="Timers" component={Timers} options={{ headerBackTitle: 'Back' }} />
         </HomeStack.Navigator>
