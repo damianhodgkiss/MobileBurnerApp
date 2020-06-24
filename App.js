@@ -25,7 +25,7 @@ const HomeStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeScreenComponent = ({ navigation, state, status }) => {
-  if (status === 'connecting') {
+  if (['offline', 'connecting'].includes(status)) {
     return (
       <State status={status} />
     );
