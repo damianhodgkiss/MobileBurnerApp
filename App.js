@@ -11,7 +11,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { store, persistor } from './store';
 import { mqttReconnect } from './mqtt';
 import { sendState } from './actions/state';
-import RemoteControl from './components/RemoteControl';
+import Home from './components/Home';
 import Settings from './components/Settings';
 import AboutSettings from './components/Settings/AboutSettings';
 import SystemSettings from './components/Settings/SystemSettings';
@@ -87,7 +87,7 @@ const HomeScreenComponent = ({ navigation, status }) => {
         },
       }}
     >
-      <Tab.Screen name="POWER" component={RemoteControl} 
+      <Tab.Screen name="POWER" component={Home} 
         options={{
           title: `POWER ${powerStateAllowed}`,
           labelStyle: {
