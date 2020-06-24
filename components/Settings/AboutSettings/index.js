@@ -25,20 +25,20 @@ const convertSecToHour = (seconds) => {
   return disp.join(', ');
 }
 
-const AboutSettings = ({ status }) => {
+const AboutSettings = ({ state }) => {
   let noGPIO = false;
-  noGPIO |= (status.get('GPin1') === undefined);
-  noGPIO |= (status.get('GPin2') === undefined);
-  noGPIO |= (status.get('GPmodeIn1') === undefined);
-  noGPIO |= (status.get('GPmodeIn2') === undefined);
-  noGPIO |= (status.get('GPout1') === undefined);
-  noGPIO |= (status.get('GPout2') === undefined);
-  noGPIO |= (status.get('GPmodeOut1') === undefined);
-  noGPIO |= (status.get('GPmodeOut2') === undefined);
+  noGPIO |= (state.get('GPin1') === undefined);
+  noGPIO |= (state.get('GPin2') === undefined);
+  noGPIO |= (state.get('GPmodeIn1') === undefined);
+  noGPIO |= (state.get('GPmodeIn2') === undefined);
+  noGPIO |= (state.get('GPout1') === undefined);
+  noGPIO |= (state.get('GPout2') === undefined);
+  noGPIO |= (state.get('GPmodeOut1') === undefined);
+  noGPIO |= (state.get('GPmodeOut2') === undefined);
 
   let noAnalog = false;
-  noAnalog |= (status.get('GPmodeAnlg') === undefined);
-  noAnalog |= (status.get('GPanlg') === undefined);
+  noAnalog |= (state.get('GPmodeAnlg') === undefined);
+  noAnalog |= (state.get('GPanlg') === undefined);
 
   let gpioCapability = 'Not fitted';
   if (!noGPIO) {
@@ -58,7 +58,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('SysVer')}
+              {state.get('SysVer')}
             </Text>
           ),
         },
@@ -67,7 +67,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('SysDate')}
+              {state.get('SysDate')}
             </Text>
           ),
         },
@@ -91,7 +91,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {convertSecToHour(status.get('SysUpTime'))}
+              {convertSecToHour(state.get('SysUpTime'))}
             </Text>
           ),
         },
@@ -100,7 +100,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {convertSecToHour(status.get('SysRunTime'))}
+              {convertSecToHour(state.get('SysRunTime'))}
             </Text>
           ),
         },
@@ -109,7 +109,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {convertSecToHour(status.get('SysGlowTime'))}
+              {convertSecToHour(state.get('SysGlowTime'))}
             </Text>
           ),
         },
@@ -124,7 +124,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('BT_MAC')}
+              {state.get('BT_MAC')}
             </Text>
           ),
         },
@@ -133,7 +133,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('IP_AP')}
+              {state.get('IP_AP')}
             </Text>
           ),
         },
@@ -142,7 +142,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('IP_APMAC')}
+              {state.get('IP_APMAC')}
             </Text>
           ),
         },
@@ -151,7 +151,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('IP_STA')}
+              {state.get('IP_STA')}
             </Text>
           ),
         },
@@ -160,7 +160,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('IP_STAMAC')}
+              {state.get('IP_STAMAC')}
             </Text>
           ),
         },
@@ -169,7 +169,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('IP_STASSID')}
+              {state.get('IP_STASSID')}
             </Text>
           ),
         },
@@ -178,7 +178,7 @@ const AboutSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('IP_OTA') ? 'Enabled' : 'Disabled'}
+              {state.get('IP_OTA') ? 'Enabled' : 'Disabled'}
             </Text>
           ),
         },
@@ -194,7 +194,7 @@ const AboutSettings = ({ status }) => {
 }
 
 const mapStateToProps = (state) => ({
-  status: state.state,
+  state: state.state,
 });
 
 export default connect(mapStateToProps, {})(AboutSettings);

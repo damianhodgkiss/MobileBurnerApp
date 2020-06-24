@@ -21,16 +21,17 @@ const Row = ({ label, value, children }) => {
 
 let timeout = null;
 
-const RemoteControl = ({ status }) => {
+const RemoteControl = ({ state, status }) => {
+  console.log('STATUS:', status);
   const spinValue = React.useRef(new Animated.Value(0)).current;
-  const RPM = status.get('FanRPM');
-  const runState = Number(status.get('RunState') || 0);
+  const RPM = state.get('FanRPM');
+  const runState = Number(state.get('RunState') || 0);
   
   const spinFan = () => {
     spinValue.setValue(0);
     Animated.timing(spinValue, {
       toValue: 1,
-      duration: 1000 / (RPM / 2000),
+      duration: 1000 / (state.get('FanRPM') / 2000),
       easing: Easing.linear,
     }).start(() => spinFan());
   };
@@ -47,8 +48,8 @@ const RemoteControl = ({ status }) => {
   const setTemperature = (dir) => {
     const { dispatch } = store;
     const desiredTemp = Math.min(Math.max(
-      status.get('TempDesired') + dir, status.get('TempMin')
-    ), status.get('TempMax'));
+      state.get('TempDesired') + dir, state.get('TempMin')
+    ), state.get('TempMax'));
 
     dispatch(updateState('TempDesired', desiredTemp));   
 
@@ -64,7 +65,7 @@ const RemoteControl = ({ status }) => {
         style={styles.background}
       >
         <View style={styles.container}>
-          <Text style={{ color: 'white', textAlign: 'center' }}>{status.get('RunString')}</Text>
+          <Text style={{ color: 'white', textAlign: 'center' }}>{state.get('RunString')}</Text>
           <View style={{ marginTop: 20, marginBottom: 20, alignItems: 'center' }}>
             <AnimatedCircularProgress
               style={{ alignItems: 'center' }}
@@ -83,8 +84,8 @@ const RemoteControl = ({ status }) => {
               {
                 (fill) => (
                   <View style={{ flexDirection: 'column' }}>
-                    <Text style={styles.temperature}>{status.get('TempDesired')}</Text>
-                    <Text style={{ fontSize: 14, color: 'rgb(241,160,62)', textAlign: 'center' }}>AMBIENT {status.get('TempCurrent')}{'\u2103'}</Text>
+                    <Text style={styles.temperature}>{state.get('TempDesired')}</Text>
+                    <Text style={{ fontSize: 14, color: 'rgb(241,160,62)', textAlign: 'center' }}>AMBIENT {state.get('TempCurrent')}{'\u2103'}</Text>
                   </View>
                 )
               }
@@ -107,31 +108,31 @@ const RemoteControl = ({ status }) => {
                 </Animated.View>
               </Row>
             }
-            {(runState !== 0 || status.get('PumpActual') > 0) &&
-              <Row label="Fuel Pump" value={`${status.get('PumpActual')} Hz`}>
+            {(runState !== 0 || state.get('PumpActual') > 0) &&
+              <Row label="Fuel Pump" value={`${state.get('PumpActual')} Hz`}>
                 <FontAwesome5 name="gas-pump" size={16} color="white" />
               </Row>
             }
-            <Row label="Body Temperature" value={`${status.get('TempBody')}\u2103`}>
+            <Row label="Body Temperature" value={`${state.get('TempBody')}\u2103`}>
               <MaterialCommunityIcons name="thermometer" size={16} color="white" />
             </Row>
-            <Row label="Input Voltage" value={`${status.get('InputVoltage')}V`}>
+            <Row label="Input Voltage" value={`${state.get('InputVoltage')}V`}>
               <MaterialCommunityIcons name="battery" size={16} color="white" />
             </Row>
             {![0,4,5,8,10,12].includes(runState) &&
-              <Row label="Glow Plug" value={`${status.get('GlowCurrent')}A`}>
+              <Row label="Glow Plug" value={`${Number(state.get('GlowCurrent')).toFixed(2)}A`}>
                 <MaterialCommunityIcons name="power-plug" size={16} color="white" />
               </Row>
             }
           </View>
-
         </View>
     </LinearGradient>
   );
 }
 
 const mapStateToProps = (state) => ({
-  status: state.state,
+  state: state.state,
+  status: state.status.get('status'),
 });
 
 export default connect(mapStateToProps, {})(RemoteControl);

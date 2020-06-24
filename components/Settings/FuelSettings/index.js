@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import SettingsScreen from '../SettingsScreen';
 
-const FuelSettings = ({ status }) => {
+const FuelSettings = ({ state }) => {
   let settings = null;
 
   const data = [
@@ -14,20 +14,20 @@ const FuelSettings = ({ status }) => {
         {
           title: 'Pump Min',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Pump Min', setting: 'PumpMin', value: status.get('PumpMin') }),
+          onPress: () => settings.setPrompt({ title: 'Pump Min', setting: 'PumpMin', value: state.get('PumpMin') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('PumpMin')} Hz
+              {state.get('PumpMin')} Hz
             </Text>
           ),
         },
         {
           title: 'Pump Max',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Pump Max', setting: 'PumpMax', value: status.get('PumpMax') }),
+          onPress: () => settings.setPrompt({ title: 'Pump Max', setting: 'PumpMax', value: state.get('PumpMax') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('PumpMax')} Hz
+              {state.get('PumpMax')} Hz
             </Text>
           ),
         },
@@ -40,20 +40,20 @@ const FuelSettings = ({ status }) => {
         {
           title: 'Fan Min',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Fan Min', setting: 'FanMin', value: status.get('FanMin') }),
+          onPress: () => settings.setPrompt({ title: 'Fan Min', setting: 'FanMin', value: state.get('FanMin') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('FanMin')} RPM
+              {state.get('FanMin')} RPM
             </Text>
           ),
         },
         {
           title: 'Fan Max',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Fan Max', setting: 'FanMax', value: status.get('FanMax') }),
+          onPress: () => settings.setPrompt({ title: 'Fan Max', setting: 'FanMax', value: state.get('FanMax') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('FanMax')} RPM
+              {state.get('FanMax')} RPM
             </Text>
           ),
         },
@@ -67,7 +67,7 @@ const FuelSettings = ({ status }) => {
 }
 
 const mapStateToProps = (state) => ({
-  status: state.state,
+  state: state.state,
 });
 
 export default connect(mapStateToProps, {})(FuelSettings);

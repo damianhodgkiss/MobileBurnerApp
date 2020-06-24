@@ -1,18 +1,27 @@
 import mqtt from '@taoqf/react-native-mqtt';
 import { refreshTimers, updateTimer } from '../actions/timers';
 import { refreshState, updateState } from '../actions/state';
+import { updateStatus } from '../actions/status';
 import { store } from '../store';
 
 let client;
 
 export const mqttReconnect = (existingState) => {
+  const { dispatch } = store;
   const state = existingState || store.getState().state;
   const MQTTClientHost = state.get('MQTTClientHost');
-  const MQTTClientPort = state.get('MQTTClientPort');
+  const MQTTClientPort = Number(state.get('MQTTClientPort') || 0);
   const MQTTClientTopicPrefix = state.get('MQTTClientTopicPrefix');
   const mqttUrl = `ws://${MQTTClientHost}:${MQTTClientPort}/mqtt`;
   
-  if (!mqttUrl) {
+  if (client) {
+    client.end(true);
+  }
+  client = null;
+
+  dispatch(updateStatus('offline'));
+
+  if (!MQTTClientPort || !MQTTClientHost) {
     console.log('Warning: No MQTT url set...');
     return;
   }
@@ -21,6 +30,8 @@ export const mqttReconnect = (existingState) => {
     console.log('Warning: No MQTT topic prefix set...');
     return;
   }
+
+  dispatch(updateStatus('connecting'));
 
   console.log(`Connecting to ${mqttUrl}...`);
   client = mqtt.connect(mqttUrl);
@@ -51,8 +62,15 @@ export const mqttReconnect = (existingState) => {
       } catch (ex) {
         console.log(`Failed: ${topic} ${ex.message}:`, json);
       }
+    } else if (topic.endsWith('status') && message) {
+      console.log(`STATUS: ${message.toString()}`);
+      dispatch(updateStatus(message.toString()));
     }
   });  
+
+  client.on('error', (err) => {
+    console.log('ERROR:', err);
+  });
 };
 
 export const mqttSend = (msg) => {
@@ -113,5 +131,6 @@ const processMessage = async (key, value) => {
 
     default:
       dispatch(updateState(key, value));
+      break;
   }
 };

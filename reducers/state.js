@@ -48,7 +48,7 @@ actionHandlers[UPDATE_STATE] = (state, action) => {
   console.log(`UPDATE: ${key} with ${value}`);
 
   if (key.indexOf('MQTTClient') === 0) {
-    mqttReconnect(state);
+    setImmediate(() => mqttReconnect(ret));
   }
 
   return ret;

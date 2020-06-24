@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, StyleSheet } from 'react-native';
 import SettingsScreen from '../SettingsScreen';
 
-const ConnectionDetails = ({ status, navigation }) => {
+const ConnectionDetails = ({ state, navigation }) => {
   let settings = null;
 
   const data = [
@@ -14,30 +14,30 @@ const ConnectionDetails = ({ status, navigation }) => {
         {
           title: 'Host',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Host', setting: 'MQTTClientHost', value: status.get('MQTTClientHost') }),
+          onPress: () => settings.setPrompt({ title: 'Host', setting: 'MQTTClientHost', value: state.get('MQTTClientHost') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('MQTTClientHost')}
+              {state.get('MQTTClientHost')}
             </Text>
           ),
         },
         {
           title: 'Port',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Port', setting: 'MQTTClientPort', value: status.get('MQTTClientPort') }),
+          onPress: () => settings.setPrompt({ title: 'Port', setting: 'MQTTClientPort', value: state.get('MQTTClientPort') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('MQTTClientPort')}
+              {state.get('MQTTClientPort')}
             </Text>
           ),
         },
         {
           title: 'Topic Prefix',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Topic Prefix', setting: 'MQTTClientTopicPrefix', value: status.get('MQTTClientTopicPrefix') }),
+          onPress: () => settings.setPrompt({ title: 'Topic Prefix', setting: 'MQTTClientTopicPrefix', value: state.get('MQTTClientTopicPrefix') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('MQTTClientTopicPrefix')}
+              {state.get('MQTTClientTopicPrefix')}
             </Text>
           ),
         },
@@ -77,7 +77,7 @@ const ConnectionDetails = ({ status, navigation }) => {
 }
 
 const mapStateToProps = (state) => ({
-  status: state.state,
+  state: state.state,
 });
 
 export default connect(mapStateToProps, {})(ConnectionDetails);

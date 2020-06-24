@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import { SettingsScreen } from 'react-native-settings-screen';
 
-const Timers = ({ status }) => {
+const Timers = ({ state }) => {
   const data = [
     {
       type: 'SECTION',
@@ -32,7 +32,7 @@ const Timers = ({ status }) => {
 }
 
 const mapStateToProps = (state) => ({
-  status: state.state,
+  state: state.state,
 });
 
 export default connect(mapStateToProps, {})(Timers);

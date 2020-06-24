@@ -11,6 +11,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { store, persistor } from './store';
 import { mqttReconnect } from './mqtt';
 import { sendState } from './actions/state';
+import State from './components/State';
 import Home from './components/Home';
 import Settings from './components/Settings';
 import AboutSettings from './components/Settings/AboutSettings';
@@ -18,13 +19,18 @@ import SystemSettings from './components/Settings/SystemSettings';
 import FuelSettings from './components/Settings/FuelSettings';
 import ConnectionSettings from './components/Settings/ConnectionSettings';
 import Timers from './components/Timers';
-import BrokerHost from './components/Settings/ConnectionSettings/BrokerHost';
 
 const HomeStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const HomeScreenComponent = ({ navigation, status }) => {
-  const runState = status.get('RunState') || 0;
+const HomeScreenComponent = ({ navigation, state, status }) => {
+  if (status === 'connecting') {
+    return (
+      <State status={status} />
+    );
+  }
+
+  const runState = state.get('RunState') || 0;
   let powerStateAllowed = 'NA'; // NA
 
   switch(runState) {
@@ -89,7 +95,7 @@ const HomeScreenComponent = ({ navigation, status }) => {
     >
       <Tab.Screen name="POWER" component={Home} 
         options={{
-          title: `POWER ${powerStateAllowed}`,
+          title: `POWER ${powerStateAllowed.replace('NA', '')}`,
           labelStyle: {
             color: 'red',
           },
@@ -123,18 +129,17 @@ const HomeScreenComponent = ({ navigation, status }) => {
 }
 
 const mapStateToProps = (state) => ({
-  status: state.state,
+  state: state.state,
+  status: state.status.get('status'),
 });
 
 const HomeScreen = connect(mapStateToProps, {})(HomeScreenComponent);
 
 export default function App() {
   React.useEffect(() => {
-    const status = store.getState().state;
-    
-    mqttReconnect();
+    setTimeout(() => mqttReconnect(), 1000);
   }, []);
-  
+
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -153,7 +158,6 @@ export default function App() {
           <HomeStack.Screen name="About" component={AboutSettings} />
           <HomeStack.Screen name="System" component={SystemSettings} />
           <HomeStack.Screen name="Fuel Mixture" component={FuelSettings} />
-          <HomeStack.Screen name="Host" component={BrokerHost} />
 
           <HomeStack.Screen name="Timers" component={Timers} options={{ headerBackTitle: 'Back' }} />
         </HomeStack.Navigator>

@@ -13,6 +13,7 @@ const persistConfig = {
   transforms: [immutableTransform()],
   key: 'root',
   storage: AsyncStorage,
+  blacklist: ['status']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

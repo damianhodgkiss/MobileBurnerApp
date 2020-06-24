@@ -5,7 +5,7 @@ import { SettingsScreen } from 'react-native-settings-screen';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 
 const Settings = ({ status, navigation }) => {
-  const data = [
+  let data = [
     {
       type: 'SECTION',
       header: ' ',
@@ -39,6 +39,11 @@ const Settings = ({ status, navigation }) => {
       ],
     },
   ];
+
+  console.log('ST:', status);
+  if (status !== 'online') {
+    data = data.slice(0, 1);
+  }
     
   return (
     <View style={styles.container}>
@@ -48,7 +53,7 @@ const Settings = ({ status, navigation }) => {
 }
 
 const mapStateToProps = (state) => ({
-  status: state.state,
+  status: state.status.get('status'),
 });
 
 export default connect(mapStateToProps, {})(Settings);

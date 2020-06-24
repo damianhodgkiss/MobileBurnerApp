@@ -1,12 +1,13 @@
 {
   "expo": {
-    "name": "AfterburnerApp",
-    "slug": "AfterburnerApp",
+    "name": "MobileBurner",
+    "slug": "MobileBurnerApp",
+    "description": "A mobile MQTT controller for the Afterburner Chinese Diesel Heater controller.",
     "platforms": [
       "ios",
-      "android",
+      "android"
     ],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -22,8 +23,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.damianhodgkiss.AfterburnerApp",
-      "buildNumber": "1.0.0"
+      "bundleIdentifier": "com.damianhodgkiss.MobileBurnerApp",
+      "buildNumber": "1.0.1"
+    },
+    "android": {
+      "package": "com.damianhodgkiss.MobileBurnerApp"
     }
   }
 }

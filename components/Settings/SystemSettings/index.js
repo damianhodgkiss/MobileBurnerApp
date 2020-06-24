@@ -4,13 +4,15 @@ import { Text, View, StyleSheet, Image, TouchableOpacity, ImageBackground } from
 import SettingsScreen from '../SettingsScreen';
 
 const formatDateTime = (str) => {
+  if (!str) return new Date();
+
   const dateParts = str.split('/');
   const timeParts = dateParts[2].split(' ')[1].split(':');
   dateParts[2] = dateParts[2].split(' ')[0];
   return new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0], timeParts[0], timeParts[1], timeParts[2]);
 };
 
-const SystemSettings = ({ status }) => {
+const SystemSettings = ({ state }) => {
   const temperatureModes = ['Celcius', 'Fahrenheit'];
   let settings = null;
 
@@ -24,7 +26,7 @@ const SystemSettings = ({ status }) => {
           showDisclosureIndicator: true,
           onPress: () => settings.setPicker({
             setting: 'TempMode',
-            value: status.get('TempMode'),
+            value: state.get('TempMode'),
             options: {
               0: 'Celcius',
               1: 'Fahrenheit',
@@ -32,7 +34,7 @@ const SystemSettings = ({ status }) => {
           }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {temperatureModes[status.get('TempMode')]}
+              {temperatureModes[state.get('TempMode')]}
             </Text>
           ),
         },
@@ -47,17 +49,17 @@ const SystemSettings = ({ status }) => {
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('inputVoltage')}V
+              {state.get('inputVoltage')}V
             </Text>
           ),
         },
         {
           title: 'Low Voltage Cutout',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Low Voltage Cutout', setting: 'LowVoltCutout', value: status.get('LowVoltCutout') }),
+          onPress: () => settings.setPrompt({ title: 'Low Voltage Cutout', setting: 'LowVoltCutout', value: state.get('LowVoltCutout') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {status.get('LowVoltCutout') === 0 ? 'Off' : `${status.get('LowVoltCutout')}V`}
+              {state.get('LowVoltCutout') === 0 ? 'Off' : `${state.get('LowVoltCutout')}V`}
             </Text>
           ),
         },
@@ -81,7 +83,7 @@ const SystemSettings = ({ status }) => {
           showDisclosureIndicator: true,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {formatDateTime(status.get('DateTime')).toLocaleString()}
+              {formatDateTime(state.get('DateTime')).toLocaleString()}
             </Text>
           ),
         },
@@ -95,7 +97,7 @@ const SystemSettings = ({ status }) => {
 }
 
 const mapStateToProps = (state) => ({
-  status: state.state,
+  state: state.state,
 });
 
 export default connect(mapStateToProps, {})(SystemSettings);
