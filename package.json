@@ -13,6 +13,7 @@
     "@react-navigation/native": "^5.5.1",
     "@react-navigation/stack": "^5.5.1",
     "@taoqf/react-native-mqtt": "^3.0.4",
+    "celsius-to-fahrenheit": "^1.0.1",
     "expo": "^37.0.0",
     "expo-linear-gradient": "~8.1.0",
     "immutable": "^4.0.0-rc.12",

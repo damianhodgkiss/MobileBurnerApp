@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import SettingsScreen from '../SettingsScreen';
+import { displayTemp } from '../../../util';
 
 const ThermostatSettings = ({ state }) => {
   let settings = null;
@@ -60,7 +61,7 @@ const ThermostatSettings = ({ state }) => {
           onPress: () => settings.setPrompt({ title: 'Window', setting: 'ThermostatWindow', value: state.get('ThermostatWindow') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {`${state.get('ThermostatWindow')}\u2103`}
+              {displayTemp(state.get('ThermostatWindow'), state.get('TempMode'))}
             </Text>
           ),
         },
@@ -92,7 +93,7 @@ const ThermostatSettings = ({ state }) => {
           onPress: () => settings.setPrompt({ title: 'Start Window', setting: 'CyclicOn', value: state.get('CyclicOn') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {`${state.get('CyclicOn')}\u2103`} ({`${state.get('CyclicTemp') + state.get('CyclicOn')}\u2103`})
+              {displayTemp(state.get('CyclicOn'), state.get('TempMode'))} ({displayTemp(state.get('CyclicTemp') + state.get('CyclicOn'), state.get('TempMode'))})
             </Text>
           ),
         },
@@ -102,7 +103,7 @@ const ThermostatSettings = ({ state }) => {
           onPress: () => settings.setPrompt({ title: 'Stop Window', setting: 'CyclicOff', value: state.get('CyclicOff') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {`${state.get('CyclicOff')}\u2103`} ({`${state.get('CyclicTemp') + state.get('CyclicOff')}\u2103`})
+              {displayTemp(state.get('CyclicOff'), state.get('TempMode'))} ({displayTemp(state.get('CyclicTemp') + state.get('CyclicOff'), state.get('TempMode'))})
             </Text>
           ),
         },

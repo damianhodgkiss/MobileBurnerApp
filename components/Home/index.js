@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { Text, View, StyleSheet, Animated, Easing, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import AnimatedCircularProgress from '../CircularProgress';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { store } from '../../store';
 import { sendState, updateState } from '../../actions/state';
+import { Circle } from 'react-native-svg';
+import { displayTemp } from '../../util';
 
 const Row = ({ label, value, children }) => {
   return (
@@ -59,6 +61,8 @@ const RemoteControl = ({ state, status }) => {
     }, 1000);
   };
 
+  const maxTemp = state.get('TempMax');
+
   return (
     <LinearGradient
         colors={['rgb(233,108,31)', 'rgb(216,95,21)']}
@@ -72,20 +76,20 @@ const RemoteControl = ({ state, status }) => {
               size={300}
               width={20}
               backgroundWidth={12}
-              fill={10}
+              fill={(state.get('TempCurrent') / maxTemp) * 100}
               rotation={210}
               arcSweepAngle={300}
-              tintColor="white"
+              tintColor="rgba(241,160,62,0.7)"
               backgroundColor="rgb(241,160,62)"
-              dashedBackground={{ width: 1, gap: 3 }}
-              dashedTint={{ width: 2, gap: 5 }}
+              dashedBackground={{ width: 1, gap: 7.5 }}
+              dashedTint={{ width: 2, gap: 0 }}
               childrenContainerStyle={{ alignItems: 'center' }}
             >
               {
                 (fill) => (
                   <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.temperature}>{state.get('TempDesired')}</Text>
-                    <Text style={{ fontSize: 14, color: 'rgb(241,160,62)', textAlign: 'center' }}>AMBIENT {state.get('TempCurrent')}{'\u2103'}</Text>
+                    <Text style={{ fontSize: 14, color: 'rgb(241,160,62)', textAlign: 'center' }}>AMBIENT {displayTemp(state.get('TempCurrent'), state.get('TempMode'))}</Text>
                   </View>
                 )
               }
@@ -113,7 +117,7 @@ const RemoteControl = ({ state, status }) => {
                 <FontAwesome5 name="gas-pump" size={16} color="white" />
               </Row>
             }
-            <Row label="Body Temperature" value={`${state.get('TempBody')}\u2103`}>
+            <Row label="Body Temperature" value={displayTemp(state.get('TempBody'), state.get('TempMode'))}>
               <MaterialCommunityIcons name="thermometer" size={16} color="white" />
             </Row>
             <Row label="Input Voltage" value={`${state.get('InputVoltage')}V`}>
