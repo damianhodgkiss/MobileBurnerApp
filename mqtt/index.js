@@ -71,6 +71,12 @@ export const mqttReconnect = (existingState) => {
   client.on('error', (err) => {
     console.log('ERROR:', err);
   });
+
+  client.on('offline', () => {
+    console.log('OFFLINE');
+    dispatch(updateStatus('offline'));
+    setTimeout(() => mqttReconnect, 30e3);
+  });
 };
 
 export const mqttSend = (msg) => {

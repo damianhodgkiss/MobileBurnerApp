@@ -45,11 +45,20 @@ const SystemSettings = ({ state }) => {
       header: 'Voltage'.toUpperCase(),
       rows: [
         {
+          title: 'System Voltage',
+          showDisclosureIndicator: false,
+          renderAccessory: () => (
+            <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
+              {state.get('SystemVoltage')}V
+            </Text>
+          ),
+        },
+        {
           title: 'Current Input Voltage',
           showDisclosureIndicator: false,
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              {state.get('inputVoltage')}V
+              {state.get('InputVoltage')}V
             </Text>
           ),
         },
