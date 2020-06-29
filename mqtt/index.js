@@ -11,6 +11,8 @@ export const mqttReconnect = (existingState) => {
   const state = existingState || store.getState().state;
   const MQTTClientHost = state.get('MQTTClientHost');
   const MQTTClientPort = Number(state.get('MQTTClientPort') || 0);
+  const MQTTClientUsername = state.get('MQTTClientUsername');
+  const MQTTClientPassword = state.get('MQTTClientPassword');
   const MQTTClientTopicPrefix = state.get('MQTTClientTopicPrefix');
   const mqttUrl = `ws://${MQTTClientHost}:${MQTTClientPort}/mqtt`;
   
@@ -19,22 +21,33 @@ export const mqttReconnect = (existingState) => {
   }
   client = null;
 
-  dispatch(updateStatus('offline'));
-
   if (!MQTTClientPort || !MQTTClientHost) {
+    dispatch(updateStatus('unconfigured'));
+
     console.log('Warning: No MQTT url set...');
     return;
   }
 
   if (!MQTTClientTopicPrefix) {
+    dispatch(updateStatus('unconfigured'));
+
     console.log('Warning: No MQTT topic prefix set...');
     return;
   }
 
   dispatch(updateStatus('connecting'));
 
-  console.log(`Connecting to ${mqttUrl}...`);
-  client = mqtt.connect(mqttUrl);
+  const options = {};
+  if (MQTTClientUsername) {
+    options.username = MQTTClientUsername;
+  }
+
+  if (MQTTClientPassword) {
+    options.password = MQTTClientPassword;
+  }
+
+  console.log(`Connecting to ${mqttUrl} (${JSON.stringify(options)}) ...`);
+  client = mqtt.connect(mqttUrl, options);
 
   client.on('connect', () => {
     client.subscribe(`${MQTTClientTopicPrefix}/JSONout`, (err) => {
@@ -77,9 +90,16 @@ export const mqttReconnect = (existingState) => {
     dispatch(updateStatus('offline'));
     setTimeout(() => mqttReconnect, 30e3);
   });
+
+  client.on('reconnect', () => {
+    console.log('RECONNECT');
+    dispatch(updateStatus('reconnecting'));
+  });
 };
 
 export const mqttSend = (msg) => {
+  if (!client) return;
+  
   const state = store.getState().state;
   const MQTTClientTopicPrefix = state.get('MQTTClientTopicPrefix');
   const topic = `${MQTTClientTopicPrefix}/JSONin`;

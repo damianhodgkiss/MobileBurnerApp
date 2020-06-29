@@ -50,20 +50,20 @@ const ConnectionDetails = ({ state, navigation }) => {
         {
           title: 'Username',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Username', setting: 'username' }),
+          onPress: () => settings.setPrompt({ title: 'Username', setting: 'MQTTClientUsername', value: state.get('MQTTClientUsername') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              Not set
+              {state.get('MQTTClientUsername') || 'Not set'}
             </Text>
           ),
         },
         {
           title: 'Password',
           showDisclosureIndicator: true,
-          onPress: () => settings.setPrompt({ title: 'Password', setting: 'password' }),
+          onPress: () => settings.setPrompt({ title: 'Password', setting: 'MQTTClientPassword', value: state.get('MQTTClientPassword') }),
           renderAccessory: () => (
             <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
-              Not set
+              {state.get('MQTTClientPassword') ? '********' : 'Not set'}
             </Text>
           ),
         },

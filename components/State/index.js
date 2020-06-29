@@ -6,7 +6,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 const State = ({ status }) => {
   const states = {
     connecting: 'Connecting to MQTT...',
-    offline: 'Offline'
+    reconnecting: 'Reconnecting...',
+    offline: 'Offline',
+    unconfigured: 'Settings \u2192 Connection',
   };
 
   return (
