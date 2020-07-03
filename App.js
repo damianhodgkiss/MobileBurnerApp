@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, Platform } from 'react-native';
 import { PersistGate } from 'redux-persist/integration/react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -20,6 +20,7 @@ import FuelSettings from './components/Settings/FuelSettings';
 import ConnectionSettings from './components/Settings/ConnectionSettings';
 import ThermostatSettings from './components/Settings/ThermostatSettings';
 import Timers from './components/Timers';
+import Timer from './components/Timers/Timer';
 
 const HomeStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -80,7 +81,7 @@ const HomeScreenComponent = ({ navigation, state, status }) => {
         labelStyle: {
           color: 'white',
           fontSize: 14,
-          marginTop: -10,
+          marginTop: Platform.select({ ios: -20, android: -40 }),
         },
         style: {
           backgroundColor: 'transparent',
@@ -162,6 +163,7 @@ export default function App() {
           <HomeStack.Screen name="Thermostat" component={ThermostatSettings} />
 
           <HomeStack.Screen name="Timers" component={Timers} options={{ headerBackTitle: 'Back' }} />
+          <HomeStack.Screen name="Timer" component={Timer} options={({ route }) => ({ title: `Timer ${route.params.id}` })} />
         </HomeStack.Navigator>
       </NavigationContainer>
     </Provider>

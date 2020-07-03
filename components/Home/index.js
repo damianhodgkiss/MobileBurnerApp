@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AnimatedCircularProgress from '../CircularProgress';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Dimensions } from 'react-native';
 import { store } from '../../store';
 import { sendState, updateState } from '../../actions/state';
 import { Circle } from 'react-native-svg';
@@ -13,9 +14,9 @@ import { displayTemp } from '../../util';
 
 const Row = ({ label, value, children }) => {
   return (
-    <View style={{ flexDirection: 'row', marginBottom: 20 }}>
-      <Text style={{ flexGrow: 1, fontSize: 14, color: 'rgb(241,160,62)' }}>{label.toUpperCase()}</Text>
-      <Text style={{ color: 'white', fontSize: 14, marginRight: 4 }}>{value.toUpperCase()}</Text>
+    <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+      <Text style={{ flexGrow: 1, fontSize: 12, color: 'rgb(241,160,62)' }}>{label.toUpperCase()}</Text>
+      <Text style={{ color: 'white', fontSize: 12, marginRight: 4 }}>{value.toUpperCase()}</Text>
       {children}
     </View>
   )
@@ -24,10 +25,11 @@ const Row = ({ label, value, children }) => {
 let timeout = null;
 
 const RemoteControl = ({ state, status }) => {
-  console.log('STATUS:', status);
   const spinValue = React.useRef(new Animated.Value(0)).current;
   const RPM = state.get('FanRPM');
   const runState = Number(state.get('RunState') || 0);
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
   
   const spinFan = () => {
     spinValue.setValue(0);
@@ -70,10 +72,10 @@ const RemoteControl = ({ state, status }) => {
       >
         <View style={styles.container}>
           <Text style={{ color: 'white', textAlign: 'center' }}>{state.get('RunString')}</Text>
-          <View style={{ marginTop: 20, marginBottom: 20, alignItems: 'center' }}>
+          <View style={{ marginTop: 10, marginBottom: 0, alignItems: 'center', flex: 0 }}>
             <AnimatedCircularProgress
               style={{ alignItems: 'center' }}
-              size={300}
+              size={windowHeight * 0.4}
               width={20}
               backgroundWidth={12}
               fill={(state.get('TempCurrent') / maxTemp) * 100}
@@ -89,22 +91,18 @@ const RemoteControl = ({ state, status }) => {
                 (fill) => (
                   <View style={{ flexDirection: 'column' }}>
                     <Text style={styles.temperature}>{state.get('TempDesired')}</Text>
-                    <Text style={{ fontSize: 14, color: 'rgb(241,160,62)', textAlign: 'center' }}>AMBIENT {displayTemp(state.get('TempCurrent'), state.get('TempMode'))}</Text>
+                    <Text style={{ fontSize: 12, color: 'rgb(241,160,62)', textAlign: 'center' }}>AMBIENT {displayTemp(state.get('TempCurrent'), state.get('TempMode'))}</Text>
                   </View>
                 )
               }
             </AnimatedCircularProgress>
-            <View style={{ top: -50, flexDirection: 'row', justifyContent: 'center' }}>
-              <TouchableOpacity onPress={() => setTemperature(-1)} style={{ marginRight: 10 }}><FontAwesome5 name="caret-down" size={50} color="rgb(241,160,62)" /></TouchableOpacity>
-              <TouchableOpacity onPress={() => setTemperature(1)} style={{ marginLeft: 10 }}><FontAwesome5 name="caret-up" size={50} color="rgb(241,160,62)" /></TouchableOpacity>
+            <View style={{ top: -40, flexDirection: 'row', justifyContent: 'center' }}>
+              <TouchableOpacity onPress={() => setTemperature(-1)} style={{ marginRight: 10 }}><FontAwesome5 name="caret-down" size={windowWidth / 10} color="rgb(241,160,62)" /></TouchableOpacity>
+              <TouchableOpacity onPress={() => setTemperature(1)} style={{ marginLeft: 10 }}><FontAwesome5 name="caret-up" size={windowWidth / 10} color="rgb(241,160,62)" /></TouchableOpacity>
             </View>
           </View>
 
-          <View style={{ paddingLeft: 40, paddingRight: 40, ...Platform.select({
-            ios: {
-              top: -50,
-            },
-          }) }}>
+          <View style={{ paddingLeft: 40, paddingRight: 40, flex: 1 }}>
             {(runState !== 0 || RPM > 0) &&
               <Row label="Fan Speed" value={`${RPM} RPM`}>
                 <Animated.View style={{ transform: [{ rotate: spin }] }}>
@@ -113,14 +111,14 @@ const RemoteControl = ({ state, status }) => {
               </Row>
             }
             {(runState !== 0 || state.get('PumpActual') > 0) &&
-              <Row label="Fuel Pump" value={`${state.get('PumpActual')} Hz`}>
+              <Row label="Fuel Pump" value={`${Number(state.get('PumpActual')).toFixed(1)} Hz`}>
                 <FontAwesome5 name="gas-pump" size={16} color="white" />
               </Row>
             }
             <Row label="Body Temperature" value={displayTemp(state.get('TempBody'), state.get('TempMode'))}>
               <MaterialCommunityIcons name="thermometer" size={16} color="white" />
             </Row>
-            <Row label="Input Voltage" value={`${state.get('InputVoltage')}V`}>
+            <Row label="Input Voltage" value={`${Number(state.get('InputVoltage')).toFixed(1)}V`}>
               <MaterialCommunityIcons name="battery" size={16} color="white" />
             </Row>
             {![0,4,5,8,10,12].includes(runState) &&
@@ -152,9 +150,11 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
+    paddingBottom: 120,
     marginTop: 30,
     alignItems: 'stretch',
     justifyContent: 'center',
+    flex: 1,
   },
   background: {
     flex: 1,

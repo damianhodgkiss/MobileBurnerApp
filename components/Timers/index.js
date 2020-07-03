@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import { SettingsScreen } from 'react-native-settings-screen';
 
-const Timers = ({ state }) => {
+const Timers = ({ state, navigation }) => {
   const data = [
     {
       type: 'SECTION',
@@ -16,6 +16,7 @@ const Timers = ({ state }) => {
     data[0].rows.push({
       title: `Timer ${i}`,
       showDisclosureIndicator: true,
+      onPress: () => navigation.navigate('Timer', { id: i }),
       renderAccessory: () => (
         <Text style={{ color: '#999', marginRight: 6, fontSize: 18 }}>
           {i === 1 ? 'Enabled' : 'Disabled'}
